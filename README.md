@@ -48,25 +48,6 @@ The core indexing logic in `scripts/index-repo.ts`:
 
 **Goal**: Traverse and analyze the repository structure and contents.
 
-**Considerations**:
-
-- How do you efficiently walk the file tree?
-- Which files should be included/excluded?
-- What information is most valuable to extract?
-- How do you handle different file types?
-- Should you parse code to extract functions, classes, imports?
-
-#### 2. `createIndex()` Function
-
-**Goal**: Transform raw analysis into an optimized, AI-friendly index.
-
-**Considerations**:
-
-- What data structure works best for LLM consumption?
-- How do you balance comprehensiveness vs. token efficiency?
-- Should you create summaries, embeddings, or structured metadata?
-- How can you enable fast, accurate question-answering?
-
 ### Testing Your Implementation
 
 1. **Create the index**:
@@ -124,14 +105,6 @@ Your solution will be evaluated on:
 - Test frequently with real questions
 - Document your design decisions
 
-## Technology Stack
-
-- **Framework**: Next.js 14 (App Router)
-- **AI**: Anthropic Claude 3.5 Sonnet via Vercel AI SDK
-- **UI**: React with Tailwind CSS
-- **Icons**: Lucide React
-- **Language**: TypeScript
-
 ## Additional Challenges (Optional)
 
 If you finish early or want to go further:
@@ -142,5 +115,3 @@ If you finish early or want to go further:
 - Create a more sophisticated index format (embeddings, chunks, etc.)
 - Add visualization of the repository structure
 - Implement caching strategies
-
-Good luck! 🚀
