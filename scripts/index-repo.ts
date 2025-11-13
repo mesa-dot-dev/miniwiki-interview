@@ -1,5 +1,7 @@
 import { writeFile } from "fs/promises";
 import { join } from "path";
+import dotenv from "dotenv";
+dotenv.config();
 
 const analyzeRepository = async (): Promise<any> => {
   console.log("🔍 Analyzing repository...");

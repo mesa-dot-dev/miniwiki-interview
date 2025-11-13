@@ -1,6 +1,6 @@
 # MiniWiki - Repository Intelligence Interview
 
-A minimal Next.js application for building an intelligent repository indexing and Q&A system. This project serves as a coding interview to assess how candidates would approach building a DeepWiki-style tool.
+A minimal Next.js application for chatting with this specific repository.
 
 ## Quick Start
 
@@ -31,61 +31,22 @@ Open [http://localhost:3000](http://localhost:3000) to see the chat interface.
 
 ## Interview Task
 
-Your goal is to implement the repository indexing system that powers the AI chat interface.
+Your goal is to implement a simple index of this repository. The index should be a simple JSON array of "documents" and you should be able to filter to relevant documents and pass that into the final LLM call to answer the user query.
+
+There is the outline of a script for creating this index and you can run it with `npm run index`.
 
 ### What's Already Built
 
 ✅ **Chat Interface** - A fully functional ChatGPT-style UI  
 ✅ **Streaming API** - Backend with Anthropic Claude integration  
-✅ **Index Loading** - System to load and inject index data into AI context  
+✅ **Index Loading** - System to save and load the index
 ✅ **CLI Runner** - Script execution infrastructure
 
 ### What You Need to Implement
 
-The core indexing logic in `scripts/index-repo.ts`:
+1. The core indexing logic in `scripts/index-repo.ts`:
 
-#### 1. `analyzeRepository()` Function
-
-**Goal**: Traverse and analyze the repository structure and contents.
-
-### Testing Your Implementation
-
-1. **Create the index**:
-
-```bash
-npm run index
-```
-
-2. **Test in the chat interface**:
-
-   - Start the dev server (`npm run dev`)
-   - Ask questions like:
-     - "What files are in this repository?"
-     - "Describe the structure of this codebase"
-     - "What does the chat API route do?"
-     - "How is the index loaded and used?"
-
-3. **Iterate and improve**:
-   - Refine your indexing strategy
-   - Optimize for better answers
-   - Consider token usage and performance
-
-## Project Structure
-
-```
-miniwiki/
-├── app/
-│   ├── api/chat/route.ts    # Streaming chat API with Anthropic
-│   ├── page.tsx             # Chat UI component
-│   ├── layout.tsx           # Root layout
-│   └── globals.css          # Tailwind styles
-├── lib/
-│   └── load-index.ts        # Index loading utilities
-├── scripts/
-│   └── index-repo.ts        # 🎯 YOUR TASK: Implement indexing logic
-├── package.json
-└── README.md
-```
+2. How the index is filtered and loaded in the chat route
 
 ## Evaluation Criteria
 
@@ -99,19 +60,7 @@ Your solution will be evaluated on:
 
 ## Tips
 
-- Start simple and iterate
+- Start with the simplest possible solution that will work and iterate
 - Consider what information an LLM needs to answer questions accurately
 - Think about token limits - you can't include everything
 - Test frequently with real questions
-- Document your design decisions
-
-## Additional Challenges (Optional)
-
-If you finish early or want to go further:
-
-- Add support for multiple repositories
-- Implement incremental index updates
-- Add semantic search capabilities
-- Create a more sophisticated index format (embeddings, chunks, etc.)
-- Add visualization of the repository structure
-- Implement caching strategies
