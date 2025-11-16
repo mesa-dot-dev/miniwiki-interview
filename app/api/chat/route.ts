@@ -1,6 +1,7 @@
 import { anthropic } from "@ai-sdk/anthropic";
 import { streamText, convertToModelMessages } from "ai";
-import { loadIndex, formatIndexForContext } from "@/lib/load-index";
+import { readFile } from "fs/promises";
+import { join } from "path";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -28,3 +29,31 @@ If the index is not available, politely inform the user and suggest they create 
 
   return result.toUIMessageStreamResponse();
 }
+
+export type RepositoryIndex = any;
+
+/**
+ * Loads the repository index from index.json
+ * Returns null if the index doesn't exist or can't be read
+ */
+export const loadIndex = async (): Promise<RepositoryIndex | null> => {
+  try {
+    const indexPath = join(process.cwd(), "index.json");
+    const indexData = await readFile(indexPath, "utf-8");
+    return JSON.parse(indexData);
+  } catch (error) {
+    // Index doesn't exist yet or couldn't be read
+    return null;
+  }
+};
+
+export const formatIndexForContext = (index: RepositoryIndex | null): string => {
+  if (!index) {
+    return "No repository index available. Ask the user to run 'npm run index' to create one.";
+  }
+
+  return `Repository Index (created ${index.timestamp}):
+${JSON.stringify(index, null, 2)}
+
+Use this index to answer questions about the repository structure and contents.`;
+};
