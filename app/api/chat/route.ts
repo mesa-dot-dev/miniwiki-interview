@@ -1,3 +1,4 @@
+import { RepositoryIndex } from "@/scripts/index-repo";
 import { anthropic } from "@ai-sdk/anthropic";
 import { streamText, convertToModelMessages } from "ai";
 import { readFile } from "fs/promises";
@@ -11,7 +12,7 @@ export async function POST(req: Request) {
 
   // Load the repository index if it exists
   const index = await loadIndex();
-  const indexContext = formatIndexForContext(index);
+  const relevantDocuments = filterRelevantDocuments(index, messages);
 
   // Convert UI messages to model messages
   const modelMessages = convertToModelMessages(messages);
@@ -19,18 +20,14 @@ export async function POST(req: Request) {
   const result = streamText({
     model: anthropic("claude-4-sonnet-20250514"),
     system: `You are a helpful AI assistant that can answer questions about a repository.
-
-${indexContext}
-
-When answering questions, use the repository index to provide accurate, specific information about the codebase.
-If the index is not available, politely inform the user and suggest they create one.`,
+      ${relevantDocuments}
+      When answering questions, use the repository index to provide accurate, specific information about the codebase.
+      If the index is not available, politely inform the user and suggest they create one.`,
     messages: modelMessages,
   });
 
   return result.toUIMessageStreamResponse();
 }
-
-export type RepositoryIndex = any;
 
 /**
  * Loads the repository index from index.json
@@ -47,13 +44,10 @@ export const loadIndex = async (): Promise<RepositoryIndex | null> => {
   }
 };
 
-export const formatIndexForContext = (index: RepositoryIndex | null): string => {
+export const filterRelevantDocuments = (index: RepositoryIndex | null, messages: any[]): string => {
   if (!index) {
     return "No repository index available. Ask the user to run 'npm run index' to create one.";
   }
 
-  return `Repository Index (created ${index.timestamp}):
-${JSON.stringify(index, null, 2)}
-
-Use this index to answer questions about the repository structure and contents.`;
+  return index;
 };
