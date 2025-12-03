@@ -5,7 +5,7 @@ dotenv.config();
 
 export type RepositoryIndex = any;
 
-const analyzeRepository = async (): Promise<any> => {
+const indexRepository = async (): Promise<any> => {
   console.log("🔍 Analyzing repository...");
 
   return {
@@ -30,7 +30,7 @@ const main = async () => {
   try {
     console.log("🚀 Starting repository indexing...\n");
 
-    const analysisData = await analyzeRepository();
+    const analysisData = await indexRepository();
     await saveIndex(analysisData);
 
     console.log("\n✨ Indexing complete!");

@@ -31,13 +31,19 @@ Open [http://localhost:3000](http://localhost:3000) to see the chat interface.
 
 ## Interview Task
 
-In multi-step agentic systems, like our review agent, when you initiate a new chat or query the agent needs to build up its understanding of the repository from scratch. It uses tool calls to do this and it's often quite good at it. It'll look up the files in a repo, read some of the files, etc. until it feels it has the knowledge to answer the initial prompt. This can be effective but it's slow and uses a lot of tokens. Every time there's a new review or chat, it has to redo all the work to understand the repository.
+**The Problem: Wasteful Repeated Work**
 
-We want to short circuit a lot of this work by building a miniature version of [Deepwiki](https://deepwiki.com/microsoft/vscode). Deepwiki indexes a codebase so that you can ask a quick question about the codebase and get back relevant sections of the codebase for answering that question.
+In multi-step agentic systems, like our review agent, every new chat or query triggers the same expensive discovery process. The agent makes dozens of tool calls to explore the repository—listing directories, reading files, searching for relevant code—burning tokens and time to build context from scratch. Then the next query comes in and it repeats all of this work again. This is fundamentally inefficient.
 
-Your goal is to implement a simple index of this repository. The index should be a simple JSON array of "documents" and you should be able to filter to relevant documents and pass that into the final LLM call to answer the user query. Hint: you should have everything you need to accomplish this task in this repo, you don't need more external dependencies (although you can if you want). Don't overcomplicate it, and ask me any questions.
+**The Solution: Precomputation**
 
-There is the outline of a script for creating this index and you can run it with `npm run index`.
+The key insight is that **most of the work to understand a codebase can be done once, upfront**. Instead of rediscovering the repository structure on every query, we can precompute an index that maps questions to relevant code sections. When a user asks a question, we simply filter the precomputed index to fetch exactly the context the LLM needs—no exploration, no wasted tool calls, just immediate access to the right information.
+
+**Your Task**
+
+Implement a simple indexing system for this repository. Create a JSON array of "documents" that captures the essential information about the codebase. When a user query comes in, filter this precomputed index to retrieve only the relevant documents and pass them directly to the LLM. The goal is to eliminate the wasteful discovery phase entirely by doing the hard work once and reusing it.
+
+Hint: you already have everything you need in this repo—don't overcomplicate it. There's an outline of an indexing script you can run with `npm run index`. Ask questions if you're unsure about anything.
 
 ### What's Already Built
 
