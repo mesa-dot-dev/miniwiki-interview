@@ -44,7 +44,7 @@ export const loadIndex = async (): Promise<RepositoryIndex | null> => {
   }
 };
 
-export const filterRelevantDocuments = (index: RepositoryIndex | null, messages: any[]): string => {
+export const filterRelevantDocuments = (index: RepositoryIndex | null, messages: any[]): any => {
   if (!index) {
     return "No repository index available. Ask the user to run 'npm run index' to create one.";
   }

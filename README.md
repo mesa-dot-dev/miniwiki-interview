@@ -29,48 +29,79 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to see the chat interface.
 
-## Interview Task
+## The Goal
 
-**The Problem: Wasteful Repeated Work**
+Build a chatbot that can answer questions about this codebase.
 
-In multi-step agentic systems, like our review agent, every new chat or query triggers the same expensive discovery process. The agent makes dozens of tool calls to explore the repository—listing directories, reading files, searching for relevant code—burning tokens and time to build context from scratch. Then the next query comes in and it repeats all of this work again. This is fundamentally inefficient.
+## The Challenge
 
-**The Solution: Precomputation**
+When AI agents need to understand a code repository, there are two main approaches:
 
-The key insight is that **most of the work to understand a codebase can be done once, upfront**. Instead of rediscovering the repository structure on every query, we can precompute an index that maps questions to relevant code sections. When a user asks a question, we simply filter the precomputed index to fetch exactly the context the LLM needs—no exploration, no wasted tool calls, just immediate access to the right information.
+### 1. Agentic Search (Real-time Exploration)
 
-**Your Task**
+The agent explores the codebase on-demand for each query:
 
-Implement a simple indexing system for this repository. Create a JSON array of "documents" that captures the essential information about the codebase. When a user query comes in, filter this precomputed index to retrieve only the relevant documents and pass them directly to the LLM. The goal is to eliminate the wasteful discovery phase entirely by doing the hard work once and reusing it.
+- Lists directories, reads files, searches for relevant code
+- **Pros**: Potentially more accurate, can navigate complex codebases
+- **Cons**: Slow, expensive (lots of tokens), repeats work for every question
 
-Hint: you already have everything you need in this repo—don't overcomplicate it. There's an outline of an indexing script you can run with `npm run index`. Ask questions if you're unsure about anything.
+### 2. RAG - Retrieval Augmented Generation (Precomputed Index)
 
-### What's Already Built
+Build an index of the codebase once, then filter it for each query:
+
+- All the hard work happens upfront in a single precomputation step
+- **Pros**: Fast, token-efficient, work is cached between chat sessions
+- **Cons**: Limited to what's in the index, potentially retrieve useless info
+
+## Your Task
+
+Implement a basic RAG system for this chatbot **without using vector embeddings**.
+
+Think of this in two phases:
+
+**Phase 1: Precomputation (one-time, cached)**
+
+- Run once to analyze and index this codebase
+- Output: A searchable index that persists between chat sessions
+- You can use LLMs during this phase if helpful
+
+**Phase 2: Query-time (fast retrieval)**
+
+- When a user asks a question, filter the precomputed index
+- Retrieve relevant code snippets and pass them to the LLM
+- No expensive exploration, just fast lookups
+
+**Hint:** You already have everything you need. There's a script at `scripts/index-repo.ts` you can run with `npm run index`. Start simple and iterate.
+
+## What's Already Built
 
 ✅ **Chat Interface** - A fully functional ChatGPT-style UI  
 ✅ **Streaming API** - Backend with Anthropic Claude integration  
-✅ **Index Loading** - System to save and load the index
-✅ **CLI Runner** - Script execution infrastructure
+✅ **Index Storage** - System to save and load your index  
+✅ **CLI Runner** - Infrastructure to run the indexing script
 
-### What You Need to Implement
+## What You Need to Implement
 
-1. The core indexing logic in `scripts/index-repo.ts`:
+**1. Precomputation Logic**
 
-2. How the index is filtered and loaded in the chat route
+- Analyze this codebase and create a searchable index
+- Save it as JSON so it persists between chat sessions
 
-## Evaluation Criteria
+**2. Query-time Retrieval**
 
-Your solution will be evaluated on:
+- Load the precomputed index
+- Filter it based on the user's question
+- Pass relevant code snippets to the LLM
 
-1. **Completeness** - Does it create a useful index?
-2. **Code Quality** - Is the code clean, well-structured, and maintainable?
-3. **Efficiency** - Is it performant and token-conscious?
-4. **Intelligence** - Does it enable accurate question-answering?
-5. **Design Decisions** - How well do you justify your approach?
+## Key Constraints
+
+- **No vector embeddings** - Use simpler techniques (keyword matching, LLM-based filtering, etc.)
+- **No external databases** - Keep it simple, use JSON files
+- **Token limits** - You can't send the entire codebase to the LLM every time
 
 ## Tips
 
-- Start with the simplest possible solution that will work and iterate
-- Consider what information an LLM needs to answer questions accurately
-- Think about token limits - you can't include everything
-- Test frequently with real questions
+- Start with the simplest approach that could work
+- The precomputation step can use LLMs if helpful
+- Test with real questions like "How does the chat API work?" or "What UI components are available?"
+- Think about what information an LLM needs to answer code questions accurately
