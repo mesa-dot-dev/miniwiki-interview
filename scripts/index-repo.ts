@@ -5,11 +5,11 @@ dotenv.config();
 
 export type RepositoryIndex = any;
 
-const indexRepository = async (): Promise<any> => {
+const indexRepository = async (): Promise<RepositoryIndex> => {
   console.log("🔍 Analyzing repository...");
 
   return {
-    message: "Analysis not yet implemented",
+    message: "Index not yet implemented",
   };
 };
 
