@@ -9,13 +9,12 @@ export const maxDuration = 30;
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
+  // NextJS specific convention to transform the message object from frontend format to backend format
+  const modelMessages = convertToModelMessages(messages);
 
   // Load the repository index if it exists
   const index = await loadIndex();
   const relevantDocuments = filterRelevantDocuments(index, messages);
-
-  // Convert UI messages to model messages
-  const modelMessages = convertToModelMessages(messages);
 
   const result = streamText({
     model: anthropic("claude-4-sonnet-20250514"),
