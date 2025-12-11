@@ -39,13 +39,13 @@ Right now the chatbot has no information about the codebase and thus cannot answ
 
 You _could_ just concatenate the whole codebase into a string and pass that into the llm with the user message. That _will_ work with this codebase but we don't want to do that.
 
-### Question 1
-
-What is the obvious limitation to this approach?
-
 Given that we don't want to stick the whole codebase into 1 LLM call, ou could give it tools like bash to read files and explore the code but then every time you ask a new question it'll have to do a bunch of exploratory work to look things up.
 
 Instead, we want to build a simple RAG system instead that can retrieve the relevant files for any given user message from the codebase in 1 distinct step and pass those files to the final LLM call with the user message so that it has the context it needs to answer the question.
+
+### Question 1
+
+What's the obvious limitation of passing in the whole codebase into the prompt?
 
 ### Constraints
 
