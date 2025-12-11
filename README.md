@@ -35,41 +35,23 @@ Build a chatbot that can answer questions about this codebase.
 
 ## The Challenge
 
-When AI agents need to understand a code repository, there are two main approaches:
+Right now the chatbot has no information about the codebase and thus cannot answer any questions about it.
 
-### 1. Agentic Search (Real-time Exploration)
+You _could_ just concatenate the whole codebase into a string and pass that into the llm with the user message. That _will_ work with this codebase but we don't want to do that.
 
-The agent explores the codebase on-demand for each query:
+### Question 1
 
-- Lists directories, reads files, searches for relevant code
-- **Pros**: Potentially more accurate, can navigate complex codebases
-- **Cons**: Slow, expensive (lots of tokens), repeats work for every question
+What is the obvious limitation to this approach?
 
-### 2. RAG - Retrieval Augmented Generation (Precomputed Index)
+Given that we don't want to stick the whole codebase into 1 LLM call, ou could give it tools like bash to read files and explore the code but then every time you ask a new question it'll have to do a bunch of exploratory work to look things up.
 
-Build an index of the codebase once, then filter it for each query:
+Instead, we want to build a simple RAG system instead that can retrieve the relevant files for any given user message from the codebase in 1 distinct step and pass those files to the final LLM call with the user message so that it has the context it needs to answer the question.
 
-- All the hard work happens upfront in a single precomputation step
-- **Pros**: Fast, token-efficient, work is cached between chat sessions
-- **Cons**: Limited to what's in the index, potentially retrieve useless info
+### Constraints
 
-## Your Task
-
-Implement a basic RAG system for this chatbot **without using vector embeddings**.
-
-Think of this in two phases:
-
-**Phase 1: Precomputation (one-time, cached)**
-
-- Run once to analyze and index this codebase
-- Output: A searchable index that persists between chat sessions
-- You can use LLMs during this phase if helpful
-
-**Phase 2: Query-time (fast retrieval)**
-
-- When a user asks a question, filter the precomputed index
-- Retrieve relevant code snippets and pass them to the LLM
-- No expensive exploration, just fast lookups
+- Do not use a vector store
+- You can assume 1 single file will never break the context window
+- You should not use any external dependencies
 
 **Hint:** You already have everything you need. There's a script at `scripts/index-repo.ts` you can run with `npm run index`. Start simple and iterate.
 
@@ -82,22 +64,16 @@ Think of this in two phases:
 
 ## What You Need to Implement
 
-**1. Precomputation Logic**
+**1. Indexing Logic**
 
 - Analyze this codebase and create a searchable index
 - Save it as JSON so it persists between chat sessions
 
-**2. Query-time Retrieval**
+**2. Retrieval Logic**
 
 - Load the precomputed index
 - Filter it based on the user's question
 - Pass relevant code snippets to the LLM
-
-## Key Constraints
-
-- **No vector embeddings** - Use simpler techniques (keyword matching, LLM-based filtering, etc.)
-- **No external databases** - Keep it simple, use JSON files
-- **Token limits** - You can't send the entire codebase to the LLM every time
 
 ## Tips
 
